@@ -1,7 +1,8 @@
 const target = 'pie is a lie';
 
 let population = [];
-let totalPopulation = 500;
+let totalPopulation = 50;
+let matingPool = [];
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -36,5 +37,12 @@ class Genotype {
 for (let i = 0; i < totalPopulation; i++) {
     population[i] = new Genotype(target.length);
     population[i].calculateFitness(target);
-    console.log(population[i]);
+}
+
+for (let i = 0; i < population.length; i++) {
+    let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
+    // better fitness means more genes in the mating pool
+    for (let j = 0; j < n; j++) {
+        matingPool.push(population[i]);
+    }
 }
