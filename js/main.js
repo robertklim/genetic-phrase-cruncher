@@ -1,4 +1,6 @@
-const target = 'pie is a lie';
+const target = 'abcd';
+
+const display = document.querySelector('#display');
 
 let population = [];
 let totalPopulation = 200;
@@ -9,7 +11,7 @@ function getRandomInt(min, max) {
 }
 
 function getRandomChar() {
-    let c = getRandomInt(32, 126);
+    let c = getRandomInt(65, 122);
     return String.fromCharCode(c);
 }
 
@@ -51,23 +53,34 @@ class Genotype {
 for (let i = 0; i < totalPopulation; i++) {
     population[i] = new Genotype(target.length);
     population[i].calculateFitness(target);
-    let child = population[i].crossGenome(population[0]);
 }
 
-for (let i = 0; i < population.length; i++) {
-    let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
-    // better fitness means more genes in the mating pool
-    for (let j = 0; j < n; j++) {
-        matingPool.push(population[i]);
+var run = true;
+
+while (run) {
+    for (let i = 0; i < population.length; i++) {
+        let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
+        // better fitness means more genes in the mating pool
+        for (let j = 0; j < n; j++) {
+            matingPool.push(population[i]);
+        }
     }
-}
 
-for (let i = 0; i < population.length; i++) {
-    let a = getRandomInt(0, matingPool.length - 1);
-    let b = getRandomInt(0, matingPool.length - 1);
-    let memberA = matingPool[a];
-    let memberB = matingPool[b];
-    let child = memberA.crossGenome(memberB);
-    child.calculateFitness(target);
-    population[i] = child;
+    for (let i = 0; i < population.length; i++) {
+        let a = getRandomInt(0, matingPool.length - 1);
+        let b = getRandomInt(0, matingPool.length - 1);
+        let memberA = matingPool[a];
+        let memberB = matingPool[b];
+        let child = memberA.crossGenome(memberB);
+        child.calculateFitness(target);
+        console.log(child.genes.toString());
+        if (child.fitness == 1) {
+            display.innerHTML = child.genes.toString();
+            console.log('Found: ' + child.genes.toString());
+            run = false;
+            break;
+        }
+        population[i] = child;
+    }
+
 }
