@@ -24,7 +24,7 @@ function setup() {
     display = createP('');
     display.position(20, 20);
 
-    // Generate population with random genotype
+    // generate population with random genotype
     for (let i = 0; i < totalPopulation; i++) {
         population[i] = new Genotype(target.length);
         population[i].calculateFitness(target);
@@ -35,7 +35,7 @@ function draw() {
 
     iterations++;
 
-    matingPool = []; // Clear mating pool
+    matingPool = []; // clear mating pool
 
     for (let i = 0; i < population.length; i++) {
         let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
@@ -45,19 +45,23 @@ function draw() {
         }
     }
 
+    // choose two population members and cross their genes
     for (let i = 0; i < population.length; i++) {
         let a = getRandomInt(0, matingPool.length - 1);
         let b = getRandomInt(0, matingPool.length - 1);
         let memberA = matingPool[a];
         let memberB = matingPool[b];
         let child = memberA.crossGenome(memberB);
+        // apply mutation
         child.mutate(mutationRate);
+        // calculate fitness
         child.calculateFitness(target);
         if (child.fitness >= bestFitness) {
             bestFitness = child.fitness;
             displayText = 'iteration: ' + iterations + '<br>';
             displayText += 'Best match: ' + child.genes.toString() + ' (fitness: ' + bestFitness + ')';
         }
+        // target found
         if (child.fitness == 1) {
             noLoop();
         }
