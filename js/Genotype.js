@@ -35,9 +35,7 @@ class Genotype {
     mutate(mutationRate) {
         for (let i = 0; i < this.genes.length; i++) {
             if (Math.random() < mutationRate) {
-                console.log('Mutation (old gene): ' + this.genes[i]);
                 this.genes[i] = getRandomChar();
-                console.log('Mutation (new gene): ' + this.genes[i]);
             }
         }
     }

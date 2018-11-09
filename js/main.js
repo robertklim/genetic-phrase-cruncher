@@ -1,11 +1,15 @@
 const target = 'Pie is a lie!';
 
-const display = document.querySelector('#display');
-
 let population = [];
-let totalPopulation = 150;
-let mutationRate = 0.01
 let matingPool = [];
+
+let totalPopulation = 200;
+let mutationRate = 0.01
+let iterations = 0;
+
+let display = '';
+let displayText = '';
+let bestFitness = 0;
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,20 +20,23 @@ function getRandomChar() {
     return String.fromCharCode(c);
 }
 
-for (let i = 0; i < totalPopulation; i++) {
-    population[i] = new Genotype(target.length);
-    population[i].calculateFitness(target);
+function setup() {
+    display = createP('');
+    display.position(20, 20);
+
+    // Generate population with random genotype
+    for (let i = 0; i < totalPopulation; i++) {
+        population[i] = new Genotype(target.length);
+        population[i].calculateFitness(target);
+    }
 }
 
-let run = true;
-let iterations = 0;
-
-while (run) {
+function draw() {
 
     iterations++;
 
     matingPool = []; // Clear mating pool
-    
+
     for (let i = 0; i < population.length; i++) {
         let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
         // better fitness means more genes in the mating pool
@@ -46,14 +53,17 @@ while (run) {
         let child = memberA.crossGenome(memberB);
         child.mutate(mutationRate);
         child.calculateFitness(target);
-        console.log(child.genes.toString() + ' ' + child.fitness);
+        if (child.fitness >= bestFitness) {
+            bestFitness = child.fitness;
+            displayText = 'iteration: ' + iterations + '<br>';
+            displayText += 'Best match: ' + child.genes.toString() + ' (fitness: ' + bestFitness + ')';
+        }
         if (child.fitness == 1) {
-            display.innerHTML = child.genes.toString();
-            console.log('Found (' + iterations + '): ' + child.genes.toString());
-            run = false;
-            break;
+            noLoop();
         }
         population[i] = child;
     }
+
+    display.html(displayText);
 
 }
