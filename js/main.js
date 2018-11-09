@@ -1,9 +1,9 @@
-const target = 'abcd';
+const target = 'robert';
 
 const display = document.querySelector('#display');
 
 let population = [];
-let totalPopulation = 200;
+let totalPopulation = 300;
 let matingPool = [];
 
 function getRandomInt(min, max) {
@@ -37,7 +37,8 @@ class Genotype {
     crossGenome(partner) {
         let child = new Genotype(this.genes.length);
 
-        let split = getRandomInt(this.genes.length * 0.25, this.genes.length * 0.75);
+        // let split = getRandomInt(this.genes.length * 0.25, this.genes.length * 0.75);
+        let split = getRandomInt(0, this.genes.length);
         for (let i = 0; i < this.genes.length; i++) {
             if (i < split) {
                 child.genes[i] = this.genes[i];
@@ -55,9 +56,15 @@ for (let i = 0; i < totalPopulation; i++) {
     population[i].calculateFitness(target);
 }
 
-var run = true;
+let run = true;
+let iterations = 0;
 
 while (run) {
+
+    iterations++;
+
+    matingPool = []; // Clear mating pool
+    
     for (let i = 0; i < population.length; i++) {
         let n = Math.floor(population[i].fitness * 100); // turn fitness (%) into quantity factor
         // better fitness means more genes in the mating pool
@@ -73,10 +80,10 @@ while (run) {
         let memberB = matingPool[b];
         let child = memberA.crossGenome(memberB);
         child.calculateFitness(target);
-        console.log(child.genes.toString());
+        console.log(child.genes.toString() + ' ' + child.fitness);
         if (child.fitness == 1) {
             display.innerHTML = child.genes.toString();
-            console.log('Found: ' + child.genes.toString());
+            console.log('Found (' + iterations + '): ' + child.genes.toString());
             run = false;
             break;
         }
