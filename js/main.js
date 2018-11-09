@@ -1,9 +1,10 @@
-const target = 'robert';
+const target = 'Pie is a lie!';
 
 const display = document.querySelector('#display');
 
 let population = [];
-let totalPopulation = 300;
+let totalPopulation = 150;
+let mutationRate = 0.01
 let matingPool = [];
 
 function getRandomInt(min, max) {
@@ -11,7 +12,7 @@ function getRandomInt(min, max) {
 }
 
 function getRandomChar() {
-    let c = getRandomInt(65, 122);
+    let c = getRandomInt(32, 126);
     return String.fromCharCode(c);
 }
 
@@ -49,6 +50,16 @@ class Genotype {
         return child;
     }
 
+    mutate(mutationRate) {
+        for (let i = 0; i < this.genes.length; i++) {
+            if (Math.random() < mutationRate) {
+                console.log('Mutation (old gene): ' + this.genes[i]);
+                this.genes[i] = getRandomChar();
+                console.log('Mutation (new gene): ' + this.genes[i]);
+            }
+        }
+    }
+
 }
 
 for (let i = 0; i < totalPopulation; i++) {
@@ -79,6 +90,7 @@ while (run) {
         let memberA = matingPool[a];
         let memberB = matingPool[b];
         let child = memberA.crossGenome(memberB);
+        child.mutate(mutationRate);
         child.calculateFitness(target);
         console.log(child.genes.toString() + ' ' + child.fitness);
         if (child.fitness == 1) {
